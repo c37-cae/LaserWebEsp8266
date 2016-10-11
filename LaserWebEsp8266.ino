@@ -7,6 +7,8 @@
 #include <Hash.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <DNSServer.h>
+#include <ESPAsyncWiFiManager.h>         //https://github.com/tzapu/WiFiManager
 
 // Maximum number of simultaned clients connected (WebSocket)
 #define MAX_WS_CLIENT 5
@@ -218,6 +220,9 @@ bool serialSwapped = false;
 // SKETCH BEGIN
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
+DNSServer dns;
+
+
 
 // State Machine for WebSocket Client;
 _ws_client ws_client[MAX_WS_CLIENT]; 
@@ -633,16 +638,22 @@ void setup(){
   Serial.print(F("\r\nBooting "));
   Serial.println(host);
   SPIFFS.begin();
-  WiFi.mode(WIFI_STA);
+//  WiFi.mode(WIFI_STA);
+//
+//  // No empty sketch SSID, try connect 
+//  if (*ssid!='*' && *password!='*' ) {
+//    Serial.printf("connecting to %s with psk %s\r\n", ssid, password );
+//    WiFi.begin(ssid, password);
+//  } else {
+//    // empty sketch SSID, try autoconnect with SDK saved credentials
+//    Serial.println(F("No SSID/PSK defined in sketch\r\nConnecting with SDK ones if any"));
+//  }
 
-  // No empty sketch SSID, try connect 
-  if (*ssid!='*' && *password!='*' ) {
-    Serial.printf("connecting to %s with psk %s\r\n", ssid, password );
-    WiFi.begin(ssid, password);
-  } else {
-    // empty sketch SSID, try autoconnect with SDK saved credentials
-    Serial.println(F("No SSID/PSK defined in sketch\r\nConnecting with SDK ones if any"));
-  }
+//  wifiManager.startConfigPortalModeless("LaserWebWifi", "laserweb");
+AsyncWiFiManager wifiManager(&server,&dns);
+  wifiManager.resetSettings();
+
+wifiManager.autoConnect("LaserWebWifiModule");
 
   // Loop until connected
   while ( WiFi.status() !=WL_CONNECTED ) {
@@ -796,4 +807,6 @@ void loop() {
 
   // RGB LED Animation
   LedRGBAnimate(fade_speed);
+
+//  wifiManager.loop();
 }
