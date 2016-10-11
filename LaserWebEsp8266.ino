@@ -17,7 +17,7 @@
 #define CLIENT_ACTIVE   1
 
 #define HELP_TEXT " <b>WebSocket2Serial HELP</b><br>" \
-                  "<kbd>?</kbd>  or <kbd>help</kbd>  show this help<br>" \
+                  "<kbd>esphelp</kbd>  show this help<br>" \
                   "<kbd>swap</kbd>      swap serial UART pin to GPIO15/GPIO13<br>" \
                   "<kbd>ping</kbd>      send ping command<br>" \
                   "<kbd>heap</kbd>      show free RAM<br>" \
@@ -26,7 +26,7 @@
                   "<kbd>fw</kbd>        show firmware date/time<br>"  \
                   "<kbd>baud n</kbd>    set serial baud rate to n<br>" \
                   "<kbd>reset p</kbd>   reset gpio pin number p<br>" \
-                  "<kbd>ls</kbd>        list SPIFFS files<br>" \
+                  "<kbd>spils</kbd>        list SPIFFS files<br>" \
                   "<kbd>read file</kbd> send SPIFFS file to serial (read)<br>" 
 
 // Web Socket client state
@@ -379,7 +379,7 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
 
   // Dir files on SPIFFS system
   // --------------------------
-  } else if (!strcmp_P(msg,PSTR("ls")) ) {
+  } else if (!strcmp_P(msg,PSTR("spils")) ) {
     Dir dir = SPIFFS.openDir("/");
     uint16_t cnt = 0;
     String out = PSTR(" <b>SPIFFS Files</b><br> <b>Filename / Size</b><br>");
@@ -516,7 +516,7 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
   } else if (client && !strcmp_P(msg,PSTR("heap"))) {
     client->printf_P(PSTR("Free Heap %ld bytes"), ESP.getFreeHeap());
 
-  } else if (client && (*msg=='?' || !strcmp_P(msg,PSTR("help")))) {
+  } else if (client && (!strcmp_P(msg,PSTR("esphelp")))) {
     client->printf_P(PSTR(HELP_TEXT));
 
   // all other to serial Proxy
