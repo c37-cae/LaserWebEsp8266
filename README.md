@@ -8,5 +8,5 @@ Dependencies
 - Arduino [ESP8266]
 - @me-no-dev https://github.com/me-no-dev/ESPAsyncWebServer
 - @me-no-dev https://github.com/me-no-dev/ESPAsyncTCP 
-- @alanswx https://github.com//ESPAsyncWiFiManager
+- @alanswx https://github.com/alanswx/ESPAsyncWiFiManager
 - nodejs for web pages development test 
