@@ -1,5 +1,3 @@
-Forked from https://github.com/hallard/WebSocketToSerial
-
 Transparent TCP Network to Serial Proxy using WebSocket for ESP8266
 ===================================================================
 

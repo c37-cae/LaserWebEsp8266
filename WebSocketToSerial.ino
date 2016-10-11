@@ -14,19 +14,18 @@
 #define CLIENT_NONE     0
 #define CLIENT_ACTIVE   1
 
-#define HELP_TEXT "[[b;green;]WebSocket2Serial HELP]\n" \
-                  "---------------------\n" \
-                  "[[b;cyan;]?] or [[b;cyan;]help] show this help\n" \
-                  "[[b;cyan;]swap]      swap serial UART pin to GPIO15/GPIO13\n" \
-                  "[[b;cyan;]ping]      send ping command\n" \
-                  "[[b;cyan;]heap]      show free RAM\n" \
-                  "[[b;cyan;]whoami]    show client # we are\n" \
-                  "[[b;cyan;]who]       show all clients connected\n" \
-                  "[[b;cyan;]fw]        show firmware date/time\n"  \
-                  "[[b;cyan;]baud n]    set serial baud rate to n\n" \
-                  "[[b;cyan;]reset p]   reset gpio pin number p\n" \
-                  "[[b;cyan;]ls]        list SPIFFS files\n" \
-                  "[[b;cyan;]read file] send SPIFFS file to serial (read)" 
+#define HELP_TEXT " <b>WebSocket2Serial HELP</b><br>" \
+                  "<kbd>?</kbd>  or <kbd>help</kbd>  show this help<br>" \
+                  "<kbd>swap</kbd>      swap serial UART pin to GPIO15/GPIO13<br>" \
+                  "<kbd>ping</kbd>      send ping command<br>" \
+                  "<kbd>heap</kbd>      show free RAM<br>" \
+                  "<kbd>whoami</kbd>    show client # we are<br>" \
+                  "<kbd>who</kbd>       show all clients connected<br>" \
+                  "<kbd>fw</kbd>        show firmware date/time<br>"  \
+                  "<kbd>baud n</kbd>    set serial baud rate to n<br>" \
+                  "<kbd>reset p</kbd>   reset gpio pin number p<br>" \
+                  "<kbd>ls</kbd>        list SPIFFS files<br>" \
+                  "<kbd>read file</kbd> send SPIFFS file to serial (read)<br>" 
 
 // Web Socket client state
 typedef struct {
@@ -208,8 +207,8 @@ static void _u0_putc(char c){
   U0F = c;
 }
 
-const char* ssid = "*******";
-const char* password = "*******";
+const char* ssid = "openhardwarecoza";
+const char* password = "aabbccddeeff";
 const char* http_username = "admin";
 const char* http_password = "admin";
 
@@ -347,13 +346,13 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
   // Custom command to talk to device
   if (!strcmp_P(msg,PSTR("ping"))) {
     if (client)
-      client->printf_P(PSTR("received your [[b;cyan;]ping], here is my [[b;cyan;]pong]"));
+      client->printf_P(PSTR("received your <kbd>ping</kbd>, here is my <kbd>pong</kbd>"));
 
   } else if (!strcmp_P(msg,PSTR("swap"))) {
     Serial.swap();
     serialSwapped != serialSwapped;
     if (client)
-      client->printf_P(PSTR("Swapped UART pins, now using [[b;green;]RX-GPIO%d TX-GPIO%d]"),
+      client->printf_P(PSTR("Swapped UART pins, now using RX-GPIO%d TX-GPIO%d"),
                               serialSwapped?13:3,serialSwapped?15:1);
 
   } else if (l>=6 && !strncmp_P(msg,PSTR("baud "), 5) ) {
@@ -365,10 +364,10 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
       delay(10);    
       Serial.begin(v);
       if (client)
-        client->printf_P(PSTR("Serial Baud Rate is now [[b;green;]%d] bps"), v);
+        client->printf_P(PSTR("Serial Baud Rate is now %d bps"), v);
     } else {
       if (client) {
-        client->printf_P(PSTR("[[b;red;]Error: Invalid Baud Rate %d]"), v);
+        client->printf_P(PSTR("Error: Invalid Baud Rate %d"), v);
         client->printf_P(PSTR("Valid baud rate are 115200, 57600, 19200 or 9600"));
       }
     }
@@ -378,7 +377,7 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
   } else if (!strcmp_P(msg,PSTR("ls")) ) {
     Dir dir = SPIFFS.openDir("/");
     uint16_t cnt = 0;
-    String out = PSTR("SPIFFS Files\r\n Size   Name");
+    String out = PSTR(" <b>SPIFFS Files</b><br> <b>Filename / Size</b><br>");
     char buff[16];
 
     while ( dir.next() ) {
@@ -386,12 +385,13 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
       File entry = dir.openFile("r");
       sprintf_P(buff, "\r\n%6d ", entry.size());
       //client->printf_P(PSTR("%5d %s"), entry.size(), entry.name());
-      out += buff;
       out += String(entry.name()).substring(1);
+      out += buff;
+      out += " bytes<br>";
       entry.close();
     }
     if (client) 
-      client->printf_P(PSTR("%s\r\nFound %d files"), out.c_str(), cnt);
+      client->printf_P(PSTR("%s <br>Found %d files"), out.c_str(), cnt);
 
   // read file and send to serial
   // ----------------------------
@@ -449,11 +449,11 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
         ofile.close();
       } else {
         if (client)
-          client->printf_P(PSTR("[[b;red;]Error: opening file %s]"), pfname);
+          client->printf_P(PSTR("Error: opening file %s"), pfname);
       }
     } else {
       if (client)
-        client->printf_P(PSTR("[[b;red;]Error: file %s not found]"), pfname);
+        client->printf_P(PSTR("Error: file %s not found"), pfname);
     }
 
   // no delay in client (websocket)
@@ -475,22 +475,22 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
       pinMode(v, OUTPUT);
       digitalWrite(v, HIGH);
       if (client)
-        client->printf_P(PSTR("[[b;orange;]Reseting pin %d]"), v);
+        client->printf_P(PSTR("Reseting pin %d"), v);
       digitalWrite(v, LOW);
       delay(50);
       digitalWrite(v, HIGH);
     } else {
       if (client) {
-        client->printf_P(PSTR("[[b;red;]Error: Invalid pin number %d]"), v);
+        client->printf_P(PSTR("Error: Invalid pin number %d"), v);
         client->printf_P(PSTR("Valid pin number are 0 to 16"));
       }
     }
 
   } else if (client && !strcmp_P(msg,PSTR("fw"))) {
-    client->printf_P(PSTR("Firmware version [[b;green;]%s %s]"), __DATE__, __TIME__);
+    client->printf_P(PSTR("Firmware version %s"), __DATE__, __TIME__);
 
   } else if (client && !strcmp_P(msg,PSTR("whoami"))) {
-    client->printf_P(PSTR("[[b;green;]You are client #%u at index[%d&#93;]"),client->id(), index );
+    client->printf_P(PSTR("You are client #%u at index[%d&#93;]"),client->id(), index );
 
   } else if (client && !strcmp_P(msg,PSTR("who"))) {
     uint8_t cnt = 0;
@@ -501,15 +501,15 @@ void execCommand(AsyncWebSocketClient * client, char * msg) {
       }
     }
     
-    client->printf_P(PSTR("[[b;green;]Current client total %d/%d possible]"), cnt, MAX_WS_CLIENT);
+    client->printf_P(PSTR("Current client total %d/%d possible"), cnt, MAX_WS_CLIENT);
     for (uint8_t i=0; i<MAX_WS_CLIENT ; i++) {
       if (ws_client[i].id ) {
-        client->printf_P(PSTR("index[[[b;green;]%d]]; client [[b;green;]#%d]"), i, ws_client[i].id );
+        client->printf_P(PSTR("index %d ; client #%d "), i, ws_client[i].id );
       }
     }
 
   } else if (client && !strcmp_P(msg,PSTR("heap"))) {
-    client->printf_P(PSTR("Free Heap [[b;green;]%ld] bytes"), ESP.getFreeHeap());
+    client->printf_P(PSTR("Free Heap %ld bytes"), ESP.getFreeHeap());
 
   } else if (client && (*msg=='?' || !strcmp_P(msg,PSTR("help")))) {
     client->printf_P(PSTR(HELP_TEXT));
