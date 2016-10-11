@@ -6,7 +6,7 @@ Serial<->Websocket bridge for use with LaserWeb CNC software, to proxy gcode/com
 Dependencies
 ------------
 - Arduino [ESP8266]
-- @me-no-dev [ESPAsyncWebServer] library
-- @me-no-dev [ESPAsyncTCP] library 
+- @me-no-dev https://github.com/me-no-dev/ESPAsyncWebServer
+- @me-no-dev https://github.com/me-no-dev/ESPAsyncTCP 
 - @alanswx https://github.com//ESPAsyncWiFiManager
-- [nodejs][7] for web pages development test 
+- nodejs for web pages development test 
