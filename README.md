@@ -108,7 +108,6 @@ http://cdn.rawgit.com/hallard/WebSocketToSerial/master/webdev/index.htm
 Known Issues/Missing Features:
 ------------------------------
 - More configuration features 
-- Configuration file for SSID/PASSWORD and login/pass for http admin access
 
 Dependencies
 ------------
