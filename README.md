@@ -53,9 +53,7 @@ Commands once connected to remote device:
 
 Every command in file `startup.ini` are executed in setup() you can chain with other files. 
 
-I'm using this sketch to drive Microchip RN2483 Lora module to test LoraWan, see the [boards][8] I used.
-
-For example my `startup.ini` file contains command to read microchip RN2483 config file named `rn2483.txt`
+example `startup.ini` file contains
 
 `startup.ini`
 ```sh
