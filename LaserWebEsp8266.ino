@@ -651,8 +651,8 @@ void setup(){
 
 //  wifiManager.startConfigPortalModeless("LaserWebWifi", "laserweb");
 AsyncWiFiManager wifiManager(&server,&dns);
-  wifiManager.resetSettings();
-
+  
+//wifiManager.resetSettings(); // Uncomment while developing to force it to bring up first run
 wifiManager.autoConnect("LaserWebWifiModule");
 
   // Loop until connected
